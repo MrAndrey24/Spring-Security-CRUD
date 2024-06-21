@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryService {
@@ -13,12 +14,33 @@ public class CategoryService {
     @Autowired
     private CategoryRepository repo;
 
-    public Long createCategory(Category category){
+    public void createCategory(Category category){
         repo.save(category);
-        return category.getId();
     }
 
     public List<Category> getAllCategories(){
-        return (List<Category>) repo.findAll();
+        return repo.findAll();
+    }
+
+    public void updateCategory(Long id, Category category){
+        repo.findById(id)
+                .map(existingCategory -> {
+                    existingCategory.setName(category.getName());
+                    existingCategory.setDescription(category.getDescription());
+                    return repo.save(existingCategory);
+                })
+                .orElseGet(() -> {
+                    category.setId(id);
+                    return repo.save(category);
+                });
+    }
+
+    public void deleteById(Long id){
+        Optional<Category> category = repo.findById(id);
+        if (category.isPresent()){
+            repo.deleteById(id);
+        } else {
+            throw new RuntimeException("Category with id " + id + " not found");
+        }
     }
 }
