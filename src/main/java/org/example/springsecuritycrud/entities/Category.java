@@ -5,17 +5,17 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
-@Table(name = "category")
 @Entity
+@Table(name = "category")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String description;
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER   , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonBackReference
-    private List<Product> product;
+    private List<Product> products;
 
     public Category() {}
 
@@ -43,21 +43,11 @@ public class Category {
         this.description = description;
     }
 
-    public List<Product> getProduct() {
-        return product;
+    public List<Product> getProducts() {
+        return products;
     }
 
-    public void setProduct(List<Product> product) {
-        this.product = product;
-    }
-
-    @Override
-    public String toString() {
-        return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", product=" + product +
-                '}';
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 }

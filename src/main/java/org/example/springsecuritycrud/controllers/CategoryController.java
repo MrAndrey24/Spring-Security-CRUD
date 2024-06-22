@@ -19,7 +19,11 @@ public class CategoryController {
     @GetMapping
     @PreAuthorize("hasAnyRole('USER', 'SUPER_ADMIN_ROLE')")
     public List<Category> getAllCategory() {
-        return service.getAllCategories();
+        try {
+            return service.getAllCategories();
+        } catch (Exception e) {
+            throw new RuntimeException("No categories found");
+        }
     }
 
     @PostMapping

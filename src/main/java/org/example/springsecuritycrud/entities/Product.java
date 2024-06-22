@@ -2,13 +2,12 @@ package org.example.springsecuritycrud.entities;
 
 import jakarta.persistence.*;
 
-@Table(name = "product")
 @Entity
+@Table(name = "product")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String name;
     private String description;
     private Double price;
@@ -16,6 +15,8 @@ public class Product {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
     private Category category;
+
+    public Product() {}
 
     public Long getId() {
         return id;

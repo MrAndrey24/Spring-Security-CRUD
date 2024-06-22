@@ -14,20 +14,19 @@ public class ProductService {
     @Autowired
     private ProductRepository repo;
 
-    public Long createProduct(Product product){
+    public void createProduct(Product product){
         if (repo.findByName(product.getName()) != null && !repo.findByName(product.getName()).isEmpty()){
             throw new RuntimeException("Product with name " + product.getName() + " already exists");
         }
         repo.save(product);
-        return product.getId();
     }
 
     public List<Product> getAllProducts(){
         return repo.findAll();
     }
 
-    public Product updateProduct(Long id, Product product) {
-        return repo.findById(id)
+    public void updateProductById(Long id, Product product) {
+        repo.findById(id)
                 .map(existingProduct -> {
                     existingProduct.setName(product.getName());
                     existingProduct.setDescription(product.getDescription());
@@ -41,7 +40,8 @@ public class ProductService {
                 });
     }
 
-    public void deleteById(Long id){
+
+    public void deleteProductById(Long id) {
         Optional<Product> product = repo.findById(id);
         if (product.isPresent()){
             repo.deleteById(id);
