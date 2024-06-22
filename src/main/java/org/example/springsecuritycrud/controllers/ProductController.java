@@ -1,13 +1,14 @@
 package org.example.springsecuritycrud.controllers;
 
+import org.example.springsecuritycrud.dto.GenericResponse;
+import org.example.springsecuritycrud.dto.ProductResponse;
 import org.example.springsecuritycrud.entities.Product;
 import org.example.springsecuritycrud.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
@@ -19,44 +20,49 @@ public class ProductController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('USER', 'SUPER_ADMIN_ROLE')")
-    public List<Product> getAllProducts() {
-        try {
-            return service.getAllProducts();
-        } catch (Exception e) {
-            throw new RuntimeException("No products found");
-        }
+    public ResponseEntity<GenericResponse> getAllProducts() {
+        return ResponseEntity.status(HttpStatus.OK).body(new GenericResponse(service.getAllProducts()));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('SUPER_ADMIN_ROLE')")
-    public ResponseEntity<String> addProduct(@RequestBody Product product) {
+    public ResponseEntity<GenericResponse> createProduct(@RequestBody Product newProduct) {
         try {
-            service.createProduct(product);
-            return ResponseEntity.ok("Product added successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(e.getMessage());
+            Long newId = service.createProduct(newProduct);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new GenericResponse(new ProductResponse(newId)));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new GenericResponse(e.getMessage()));
         }
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('SUPER_ADMIN_ROLE')")
-    public ResponseEntity<String> updateProductById(@PathVariable Long id, @RequestBody Product product){
+    public ResponseEntity<GenericResponse> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct) {
         try {
-            service.updateProductById(id, product);
-            return ResponseEntity.ok("Product updated successfully");
-        } catch (Exception e){
-            throw new RuntimeException("Product with id " + id + " not found");
+            if (service.get(id) != null) {
+                updatedProduct.setId(id);
+                service.updateProduct(updatedProduct);
+                return ResponseEntity.status(HttpStatus.OK).body(new GenericResponse("Product updated successfully"));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GenericResponse("Product not found"));
+            }
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new GenericResponse(e.getMessage()));
         }
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('SUPER_ADMIN_ROLE')")
-    public ResponseEntity<String> deleteProductById(@PathVariable Long id){
+    public ResponseEntity<GenericResponse> deleteProduct(@PathVariable Long id) {
         try {
-            service.deleteProductById(id);
-            return ResponseEntity.ok("Product deleted successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(e.getMessage());
+            if (service.get(id) != null) {
+                service.deleteProductById(id);
+                return ResponseEntity.status(HttpStatus.OK).body(new GenericResponse("Product deleted successfully"));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GenericResponse("Product not found"));
+            }
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new GenericResponse(e.getMessage()));
         }
     }
 }

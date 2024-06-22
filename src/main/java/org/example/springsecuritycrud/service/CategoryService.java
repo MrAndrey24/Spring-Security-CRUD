@@ -14,33 +14,28 @@ public class CategoryService {
     @Autowired
     private CategoryRepository repo;
 
-    public void createCategory(Category category){
+    public Long createCategory(Category category){
+        if (repo.findByName(category.getName()) != null && !repo.findByName(category.getName()).isEmpty()){
+            throw new RuntimeException("Category with name " + category.getName() + " already exists");
+        }
         repo.save(category);
+        return category.getId();
     }
 
     public List<Category> getAllCategories(){
         return repo.findAll();
     }
 
-    public void updateCategory(Long id, Category category){
-        repo.findById(id)
-                .map(existingCategory -> {
-                    existingCategory.setName(category.getName());
-                    existingCategory.setDescription(category.getDescription());
-                    return repo.save(existingCategory);
-                })
-                .orElseGet(() -> {
-                    category.setId(id);
-                    return repo.save(category);
-                });
+    public Category get(Long id) {
+        Optional<Category> category = repo.findById(id);
+        return category.orElse(null);
     }
 
-    public void deleteById(Long id){
-        Optional<Category> category = repo.findById(id);
-        if (category.isPresent()){
-            repo.deleteById(id);
-        } else {
-            throw new RuntimeException("Category with id " + id + " not found");
-        }
+    public void updateCategory(Category category) {
+        repo.save(category);
+    }
+
+    public void deleteCategoryById(Long id) {
+        repo.deleteById(id);
     }
 }
