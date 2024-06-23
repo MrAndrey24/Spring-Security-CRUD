@@ -1,9 +1,6 @@
 package org.example.springsecuritycrud.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 @Table(name = "category")
@@ -13,9 +10,6 @@ public class Category {
     private Long id;
     private String name;
     private String description;
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonBackReference
-    private List<Product> products;
 
     public Category() {}
 
@@ -42,12 +36,5 @@ public class Category {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
+    
 }
