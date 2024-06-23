@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("api/v1/users")
 public class UserRestController {
     @Autowired
     private UserRepository UserRepository;
@@ -21,7 +21,7 @@ public class UserRestController {
     private PasswordEncoder passwordEncoder;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN_ROLE')")
     public List<User> getAllUsers() {
         return UserRepository.findAll();
     }
@@ -37,7 +37,7 @@ public class UserRestController {
         return UserRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    @GetMapping("/filterByName/{name}")
+    @GetMapping("/{name}")
     public List<User> getUserById(@PathVariable String name) {
         return UserRepository.findUsersWithCharacterInName(name);
     }

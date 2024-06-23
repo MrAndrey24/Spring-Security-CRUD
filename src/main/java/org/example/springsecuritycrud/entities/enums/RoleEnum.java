@@ -1,7 +1,6 @@
 package org.example.springsecuritycrud.entities.enums;
 
 public enum RoleEnum {
-    USER,
-    ADMIN,
-    SUPER_ADMIN
+    SUPER_ADMIN_ROLE,
+    USER
 }
