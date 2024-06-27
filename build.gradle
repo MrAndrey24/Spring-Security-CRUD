@@ -31,6 +31,13 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 }
 
+bootJar {
+    archiveBaseName.set('spring-security-crud')
+    archiveVersion.set('1.0.0')
+    archiveFileName.set('spring-security-crud-1.0.0.jar')
+    launchScript()
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
