@@ -18,6 +18,14 @@ public class Product {
 
     public Product() {}
 
+    public Product(String name, String description, Double price, Integer stock, Category category) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stock = stock;
+        this.category = category;
+    }
+
     public Long getId() {
         return id;
     }

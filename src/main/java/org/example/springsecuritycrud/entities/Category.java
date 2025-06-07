@@ -13,6 +13,11 @@ public class Category {
 
     public Category() {}
 
+    public Category(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     public Long getId() {
         return id;
     }
@@ -36,5 +41,5 @@ public class Category {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
 }
